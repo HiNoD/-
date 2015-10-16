@@ -1,176 +1,265 @@
-#include<SFML\Graphics.hpp>
+#include <SFML\Graphics.hpp>
 #include <iostream>
-#include<sstream>
+#include <sstream>
 
 
 using namespace sf;
 using namespace std;
 
+void is_victory(int pole[3][3], bool & result, int is_cross) {
+	int x;
+	int y;
+	bool flag;
+	for (y = 0; y < 3; y++) {
+		flag = true;
+		for (x = 0; x < 3; x++) {
+			if (pole[y][x] != is_cross) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			result = true;
+			std::cout << "victory \n";
+		}
+	}
+	for (x = 0; x < 3; x++) {
+		flag = true;
+		for (y = 0; y < 3; y++) {
+			if (pole[y][x] != is_cross) {
+				flag = false;
+			}
+		}
+		if (flag) {
+			result = true;
+			std::cout << "victory \n";
+		}
+	}
+}
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(600, 400), "Krestiki-noliki");
-	
+
 	Image map_image;
 	map_image.loadFromFile("images/pole.png");
 	Texture map;
 	map.loadFromImage(map_image);
 	Sprite s_map;
+	s_map.setPosition(0, 0);
 	s_map.setTexture(map);
-	
+
+	Image menu_image;
+	menu_image.loadFromFile("images/button.png");
+	Texture menu;
+	menu.loadFromImage(menu_image);
+	Sprite s_menu;
+	s_menu.setTexture(menu);
+	s_menu.setPosition(400, 0);
+
 	Image x_image;
 	x_image.loadFromFile("images/XO.png");
-	Texture x;
-	x.loadFromImage(x_image);
-
-	Sprite s_x;
-	Sprite s_x1;
-	Sprite s_x2;
-	Sprite s_x3;
-	Sprite s_x4;
+	Texture t_x;
+	t_x.loadFromImage(x_image);
 
 	Image o_image;
 	o_image.loadFromFile("images/XO.png");
-	Texture o;
-	o.loadFromImage(o_image);
+	Texture t_o;
+	t_o.loadFromImage(o_image);
 
-	Sprite s_o;
-	Sprite s_o1;
-	Sprite s_o2;
-	Sprite s_o3;
-	Sprite s_o4;
-
-	int coor1[] = { 50,50,150,150 };
-	int coor2[] = { 150,50,250,150 };
-	int coor3[] = { 250,50,350,150 };
-	int coor4[] = { 50,150,150,250 };
-	int coor5[] = { 150,150,250,250 };
-	int coor6[] = { 250,150,350,250 };
-	int coor7[] = { 50,250,150,350 };
-	int coor8[] = { 150,250,250,350 };
-	int coor9[] = { 250,250,350,350 };
-
+	bool cross_move = true;
+	int pole[3][3] = { { 0,0,0 }, {0, 0, 0}, {0, 0, 0} };
+	int button_coor[] = { 100,150,170,220,240,290,400,600 };
+	int coor[] = { 50,150,250,350 };
+	bool victory = false;
 	while (window.isOpen())
 	{
+		if (!victory) {
+			Vector2i pixelPos = Mouse::getPosition(window);//забираем коорд курсорa
 
-		Vector2i pixelPos = Mouse::getPosition(window);//забираем коорд курсора
-		std::cout << pixelPos.x << "\n";//смотрим на координату Х позиции курсора в консоли (она не будет больше ширины окна)
+			sf::Event event;
+			while (window.pollEvent(event))
+			{
+				if (event.type == sf::Event::Closed)
+					window.close();
 
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-				Vector2i localPosition = sf::Mouse::getPosition(window);//узнавать где курсор
 
-				if (event.type == sf::Event::MouseButtonPressed)
+				int i;
+				i = 0;
+				int k;
+				//Заполнение игрового поля
+
+				if (event.type == sf::Event::MouseButtonReleased)
 				{
 					if (event.key.code == sf::Mouse::Left)
 					{
-						if (coor1[0] << pixelPos.x << coor1[2])//1
-						{
-							if (coor1[1] << pixelPos.y << coor1[3])
+						if (coor[0] < pixelPos.x && pixelPos.x < coor[3] && coor[0] < pixelPos.y && pixelPos.y < coor[3]) {
+							if (cross_move == true)
 							{
-								s_x.setTexture(x);
-								s_x.setTextureRect(IntRect(120, 105, 75, 90));
-								s_x.setPosition(50, 50);
+								k = 1;
+								cross_move = false;
 							}
-						}
-						
-						if (coor2[0] << pixelPos.x << coor2[2])//2
-						{
-							if (coor2[1] << pixelPos.y << coor2[3])
-							{
-								s_o.setTexture(o);
-								s_o.setTextureRect(IntRect(240, 105, 60, 90));
-								s_o.setPosition(50, 50);
+							else {
+								k = 2;
+								cross_move = true;
 							}
 						}
 
-						if (coor3[0] << pixelPos.x << coor3[2])//3
+						if (coor[0] < pixelPos.x && pixelPos.x < coor[1])//1 проверка по x
 						{
-							if (coor3[1] << pixelPos.y << coor3[3])
+							if (coor[0] < pixelPos.y && pixelPos.y < coor[1])//1 проверка по y
 							{
-								s_x1.setTexture(x);
-								s_x1.setTextureRect(IntRect(120, 105, 75, 90));
-								s_x1.setPosition(50, 50);
+								if (pole[0][0] == 0)
+								{
+									pole[0][0] = k;
+
+								}
+							}
+
+							else if (coor[1] < pixelPos.y && pixelPos.y < coor[2])//2 проверка по y
+							{
+								if (pole[1][0] == 0)
+								{
+									pole[1][0] = k;
+								}
+							}
+
+							else if (coor[2] < pixelPos.y && pixelPos.y < coor[3])//3 проверка по y
+							{
+								if (pole[2][0] == 0)
+								{
+									pole[2][0] = k;
+								}
 							}
 						}
 
-						if (coor4[0] << pixelPos.x << coor4[2])//4
+						else if (coor[1] < pixelPos.x && pixelPos.x < coor[2])//2 проверка по x
 						{
-							if (coor4[1] << pixelPos.y << coor4[3])
+							if (coor[0] < pixelPos.y && pixelPos.y < coor[1])//1 проверка по y
 							{
-								s_o1.setTexture(o);
-								s_o1.setTextureRect(IntRect(240, 105, 60, 90));
-								s_o1.setPosition(50, 50);
+								if (pole[0][1] == 0)
+								{
+									pole[0][1] = k;
+								}
+							}
+
+							else if (coor[1] < pixelPos.y && pixelPos.y < coor[2])//2 проверка по y
+							{
+								if (pole[1][1] == 0)
+								{
+									pole[1][1] = k;
+								}
+							}
+
+							else if (coor[2] < pixelPos.y && pixelPos.y < coor[3])//3 проверка по y
+							{
+								if (pole[2][1] == 0)
+								{
+									pole[2][1] = k;
+								}
 							}
 						}
 
-						if (coor5[0] << pixelPos.x << coor5[2])//5
+						else if (coor[2] < pixelPos.x && pixelPos.x < coor[3])//3 проверка по x
 						{
-							if (coor5[1] << pixelPos.y << coor5[3])
+							if (coor[0] < pixelPos.y && pixelPos.y < coor[1])//1 проверка по y
 							{
-								s_x2.setTexture(x);
-								s_x2.setTextureRect(IntRect(120, 105, 75, 90));
-								s_x2.setPosition(50, 50);
+								if (pole[0][2] == 0)
+								{
+									pole[0][2] = k;
+								}
 							}
-						}
 
-						if (coor6[0] << pixelPos.x << coor6[2])//6
-						{
-							if (coor6[1] << pixelPos.y << coor6[3])
+							else if (coor[1] < pixelPos.y && pixelPos.y < coor[2])//2 проверка по y 
 							{
-								s_o2.setTexture(o);
-								s_o2.setTextureRect(IntRect(240, 105, 60, 90));
-								s_o2.setPosition(50, 50);
+								if (pole[1][2] == 0)
+								{
+									pole[1][2] = k;
+								}
 							}
-						}
 
-						if (coor7[0] << pixelPos.x << coor7[2])//7
-						{
-							if (coor7[1] << pixelPos.y << coor7[3])
+							else if (coor[2] < pixelPos.y && pixelPos.y < coor[3])//3 проверка по y
 							{
-								s_x3.setTexture(x);
-								s_x3.setTextureRect(IntRect(120, 105, 75, 90));
-								s_x3.setPosition(50, 50);
-							}
-						}
-						if (coor8[0] << pixelPos.x << coor8[2])//8
-						{
-							if (coor8[1] << pixelPos.y << coor8[3])
-							{
-								s_o3.setTexture(o);
-								s_o3.setTextureRect(IntRect(240, 105, 60, 90));
-								s_o3.setPosition(50, 50);
-							}
-						}
-
-						if (coor9[0] << pixelPos.x << coor9[2])//9
-						{
-							if (coor9[1] << pixelPos.y << coor9[3])
-							{
-								s_x4.setTexture(x);
-								s_x4.setTextureRect(IntRect(120, 105, 75, 90));
-								s_x4.setPosition(50, 50);
+								if (pole[2][2] == 0)
+								{
+									pole[2][2] = k;
+								}
 							}
 						}
 					}
-				}
-		}
 
-		window.clear();
-		window.draw(s_map);
-		window.draw(s_x);
-		window.draw(s_o);
-		window.draw(s_x1);
-		window.draw(s_o1);
-		window.draw(s_x2);
-		window.draw(s_o2);
-		window.draw(s_x3);
-		window.draw(s_o3);
-		window.draw(s_x4);
-		window.display();
+				}
+
+				/*
+				//Кнопки
+				{
+				Vector2i pixelPos = Mouse::getPosition(window);
+				if (event.type == sf::Event::MouseButtonPressed)
+				{
+				if (event.key.code == sf::Mouse::Left)
+				{
+				if (button_coor[6] < pixelPos.x < button_coor[7])
+				{
+				if (button_coor[0] < pixelPos.y < button_coor[1])
+				{
+				window.clear();
+				}
+				else if (button_coor[2] < pixelPos.y < button_coor[3])
+				{
+				//pravile
+				}
+				else if (button_coor[4] < pixelPos.y < button_coor[5])
+				{
+
+				}
+				}
+				}
+				}
+				}*/
+
+			}
+
+			is_victory(pole, victory, 1);
+			is_victory(pole, victory, 2);
+
+			window.clear();
+			window.draw(s_map);
+			window.draw(s_menu);
+
+			Sprite my_sprite;
+			int x;
+			int y;
+			for (y = 0; y < 3; y++) {
+				for (x = 0; x < 3; x++) {
+					if (pole[y][x] == 1) {
+						my_sprite.setTexture(t_x);
+						my_sprite.setTextureRect(IntRect(120, 105, 75, 90));
+					}
+					else if (pole[y][x] == 2) {
+						my_sprite.setTextureRect(IntRect(240, 105, 60, 90));
+						my_sprite.setTexture(t_o);
+					}
+
+					my_sprite.setPosition(x * 100 + 50, y * 100 + 50);
+					if (pole[y][x] == 2 || pole[y][x] == 1)
+					{
+						window.draw(my_sprite);
+					}
+				}
+
+			}
+			window.display();
+		}
 	}
+	/*Font font; 
+	font.loadFromFile("Sensei-Medium.ttf");
+
+	Text t_game_over("", font, 60);
+	t_game_over.setColor(Color(255, 255, 255));
+	t_game_over.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+	new_score_text.setString("game over"));
+	new_score_text.setPosition(300, 650);
+	window.draw(new_score_text);*/
 
 	return 0;
 }
