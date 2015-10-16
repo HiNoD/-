@@ -34,6 +34,30 @@ void is_victory(int pole[3][3], bool & result, int is_cross) {
 			std::cout << "victory \n";
 		}
 	}
+	{
+		flag = true;
+		if (pole[0][0] != is_cross || pole[1][1] != is_cross || pole[2][2] != is_cross)
+		{
+			flag = false;
+		}
+		if (flag)
+		{
+			result = true;
+			std::cout << "victory\n";
+		}
+	}
+	{
+		flag = true;
+		if (pole[0][2] != is_cross || pole[1][1] != is_cross || pole[2][0] != is_cross)
+		{
+			flag = false;
+		}
+		if (flag)
+		{
+			result = true;
+			std::cout << "victory\n";
+		}
+	}
 }
 
 int main()
@@ -68,7 +92,7 @@ int main()
 
 	bool cross_move = true;
 	int pole[3][3] = { { 0,0,0 }, {0, 0, 0}, {0, 0, 0} };
-	int button_coor[] = { 100,150,170,220,240,290,400,600 };
+	int button_coor[2][6] = { {100,150,170,220,240,290 }, { 400,600 } };
 	int coor[] = { 50,150,250,350 };
 	bool victory = false;
 	while (window.isOpen())
@@ -189,32 +213,33 @@ int main()
 
 				}
 
-				/*
-				//Êíîïêè
-				{
-				Vector2i pixelPos = Mouse::getPosition(window);
-				if (event.type == sf::Event::MouseButtonPressed)
-				{
-				if (event.key.code == sf::Mouse::Left)
-				{
-				if (button_coor[6] < pixelPos.x < button_coor[7])
-				{
-				if (button_coor[0] < pixelPos.y < button_coor[1])
-				{
-				window.clear();
-				}
-				else if (button_coor[2] < pixelPos.y < button_coor[3])
-				{
-				//pravile
-				}
-				else if (button_coor[4] < pixelPos.y < button_coor[5])
-				{
+				
+				/*Êíîïêè
 
-				}
-				}
-				}
-				}
-				}*/
+					Vector2i pixelPos = Mouse::getPosition(window);
+					if (event.type == sf::Event::MouseButtonPressed)
+					{
+						if (event.key.code == sf::Mouse::Left)
+						{
+							if (button_coor[1][0] < pixelPos.x && pixelPos.x < button_coor[1][1])
+							{
+								if (button_coor[0][0] < pixelPos.y && pixelPos.y < button_coor[0][1])
+								{
+									window.clear();
+								}
+								else if (button_coor[0][2] < pixelPos.y && pixelPos.y < button_coor[0][3])
+								{
+									//pravile
+								}
+								else if (button_coor[0][4] < pixelPos.y && pixelPos.y < button_coor[0][5])
+								{
+									window.close();
+								}
+							}
+						}
+					}*/
+				
+				
 
 			}
 
